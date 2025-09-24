@@ -26,6 +26,7 @@ const is_websocket_running_ptr = dlsym(lib, :is_websocket_running)
 
 # Julia callback 함수 정의
 function julia_callback(data_ptr::Ptr{Cchar})
+    GC.enable(false)
     try
         # C 문자열을 Julia 문자열로 변환
         if data_ptr == C_NULL
@@ -36,6 +37,8 @@ function julia_callback(data_ptr::Ptr{Cchar})
         end
     catch e
         println("[Julia] 데이터 처리 중 오류: $e")
+    finally
+        GC.enable(true)
     end
     nothing
 end
